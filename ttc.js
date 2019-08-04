@@ -1,6 +1,7 @@
 const canvas = document.getElementById("game");
 const context = canvas.getContext("2d");
 const fieldImg = new Image();
+const labelImg = new Image();
 const xImg = new Image();
 const oImg = new Image();
 const box = 96; // square size (pxl)
@@ -9,147 +10,146 @@ let turnNumber = 1;
 let msg;
 
 let cells = [
-  ["[0][0]", "[0][1]", "[0][2]"],
-  ["[1][0]","[1][1]", "[1][2]"],
-  ["[2][0]", "[2][1]", "[2][2]"]
+    ["[0][0]", "[0][1]", "[0][2]"],
+    ["[1][0]","[1][1]", "[1][2]"],
+    ["[2][0]", "[2][1]", "[2][2]"]
 ];
 
 fieldImg.src = "images/field.png";
+labelImg.src = "images/label.png";
 xImg.src = "images/X.png";
 oImg.src = "images/O.png";
 
 function updateField(event) {
-  let click = {
-    x: event.offsetX,
-    y: event.offsetY
-  };
+    let click = {
+        x: event.offsetX,
+        y: event.offsetY
+    };
 
-  if (click.x > 2 * box && click.x < 3 * box && click.y > 2 * box && click.y < 3 * box) makeTurn(0, 0);
-  else if (click.x > 3 * box && click.x < 4 * box && click.y > 2 * box && click.y < 3 * box) makeTurn(0, 1);
-  else if (click.x > 4 * box && click.x < 5 * box && click.y > 2 * box && click.y < 3 * box) makeTurn(0, 2);
-  else if (click.x > 2 * box && click.x < 3 * box && click.y > 3 * box && click.y < 4 * box) makeTurn(1, 0);
-  else if (click.x > 3 * box && click.x < 4 * box && click.y > 3 * box && click.y < 4 * box) makeTurn(1, 1);
-  else if (click.x > 4 * box && click.x < 5 * box && click.y > 3 * box && click.y < 4 * box) makeTurn(1, 2);
-  else if (click.x > 2 * box && click.x < 3 * box && click.y > 4 * box && click.y < 5 * box) makeTurn(2, 0);
-  else if (click.x > 3 * box && click.x < 4 * box && click.y > 4 * box && click.y < 5 * box) makeTurn(2, 1);
-  else if (click.x > 4 * box && click.x < 5 * box && click.y > 4 * box && click.y < 5 * box) makeTurn(2, 2);
-  else return;
+    if (click.x > 2 * box && click.x < 3 * box && click.y > 2 * box && click.y < 3 * box) makeTurn(0, 0);
+    else if (click.x > 3 * box && click.x < 4 * box && click.y > 2 * box && click.y < 3 * box) makeTurn(0, 1);
+    else if (click.x > 4 * box && click.x < 5 * box && click.y > 2 * box && click.y < 3 * box) makeTurn(0, 2);
+    else if (click.x > 2 * box && click.x < 3 * box && click.y > 3 * box && click.y < 4 * box) makeTurn(1, 0);
+    else if (click.x > 3 * box && click.x < 4 * box && click.y > 3 * box && click.y < 4 * box) makeTurn(1, 1);
+    else if (click.x > 4 * box && click.x < 5 * box && click.y > 3 * box && click.y < 4 * box) makeTurn(1, 2);
+    else if (click.x > 2 * box && click.x < 3 * box && click.y > 4 * box && click.y < 5 * box) makeTurn(2, 0);
+    else if (click.x > 3 * box && click.x < 4 * box && click.y > 4 * box && click.y < 5 * box) makeTurn(2, 1);
+    else if (click.x > 4 * box && click.x < 5 * box && click.y > 4 * box && click.y < 5 * box) makeTurn(2, 2);
+    else return;
 }
 
 function makeTurn(x, y) {
-  if (cells[x][y] != "X" && cells[x][y] != "O") { // click on an empty cell
-    if (turn == "X") context.drawImage(xImg, (2 + y) * box + 4, (2 + x) * box + 4);
-    else if (turn == "O") context.drawImage(oImg, (2 + y) * box + 4, (2 + x) * box + 4);
-    cells[x][y] = turn;
+    if (cells[x][y] != "X" && cells[x][y] != "O") { // click on an empty cell
+        if (turn == "X") context.drawImage(xImg, (2 + y) * box + 4, (2 + x) * box + 4);
+        else if (turn == "O") context.drawImage(oImg, (2 + y) * box + 4, (2 + x) * box + 4);
+        cells[x][y] = turn;
     
-    if (!checkWin()) nextTurn();
-  }
+        if (!checkWin()) nextTurn();
+    }
 }
 
 function nextTurn() {
-  if (turnNumber >= 9) { // draw
-    msg = "It's a draw...";
-    context.fillStyle = "green";
-    context.fillRect(box + 16, box / 3 - 16, 400, 60);
-    context.fillStyle = "black";
-    context.fillText(msg, box * 2.5, 10 + box / 2);
-    canvas.removeEventListener("click", updateField);
-    return;
-  }
+    if (turnNumber >= 9) { // draw
+        msg = "It's a draw...";
+        context.drawImage(labelImg, 112, 16);
+        context.fillStyle = "black";
+        context.fillText(msg, box * 2.5, 10 + box / 2);
+        canvas.removeEventListener("click", updateField);
+        return;
+    }
 
-  if (turn == "X") turn = "O";
-  else if (turn == "O") turn = "X";
-  turnNumber++;
-  msg = turn + " makes the turn";
-  printMsg();
+    if (turn == "X") turn = "O";
+    else if (turn == "O") turn = "X";
+    turnNumber++;
+    msg = turn + " makes the turn";
+    printMsg();
 }
 
 function checkWin() {
-  for (let i = 0; i < 3; i++) {
-    if ((cells[i][0] == cells[i][1]) && (cells[i][0] == cells[i][2])) { // check every horizontal line
-      msg = cells[i][0] + " wins. Congrats!";
+    for (let i = 0; i < 3; i++) {
+        if ((cells[i][0] == cells[i][1]) && (cells[i][0] == cells[i][2])) { // check every horizontal line
+             msg = cells[i][0] + " wins. Congrats!";
       
-      context.beginPath(); 
-      context.lineWidth = 2.5;      
-      if (turn == "O") context.strokeStyle = "red";
-      else context.strokeStyle = "blue";
-      context.moveTo(2 * box, (i + 2.5) * box);
-      context.lineTo(5 * box, (i + 2.5) * box);
-      context.stroke();
-      
-      printMsg();
-      canvas.removeEventListener("click", updateField);
-      return true;
+            context.beginPath(); 
+            context.lineWidth = 2.5;      
+            if (turn == "O") context.strokeStyle = "red";
+            else context.strokeStyle = "blue";
+            context.moveTo(2 * box, (i + 2.5) * box);
+            context.lineTo(5 * box, (i + 2.5) * box);
+            context.stroke();
+
+            printMsg();
+            canvas.removeEventListener("click", updateField);
+            return true;
+        }
+
+        if ((cells[0][i] == cells[1][i]) && (cells[0][i] == cells[2][i])) { // check every vertical line
+            msg = cells[0][i] + " wins. Congrats!";
+
+            context.beginPath(); 
+            context.lineWidth = 2.5;      
+            if (turn == "O") context.strokeStyle = "red";
+            else context.strokeStyle = "blue";
+            context.moveTo((i + 2.5) * box, 2 * box);
+            context.lineTo((i + 2.5) * box, 5 * box);
+            context.stroke();
+
+            printMsg();
+            canvas.removeEventListener("click", updateField);
+            return true;
+        }
     }
 
-    if ((cells[0][i] == cells[1][i]) && (cells[0][i] == cells[2][i])) { // check every vertical line
-      msg = cells[0][i] + " wins. Congrats!";
+    if ((cells[0][0] == cells[1][1]) && (cells[0][0] == cells[2][2])) { // diagonal
+        msg = cells[0][0] + " wins. Congrats!";
 
-      context.beginPath(); 
-      context.lineWidth = 2.5;      
-      if (turn == "O") context.strokeStyle = "red";
-      else context.strokeStyle = "blue";
-      context.moveTo((i + 2.5) * box, 2 * box);
-      context.lineTo((i + 2.5) * box, 5 * box);
-      context.stroke();
+        context.beginPath(); 
+        context.lineWidth = 2.5;      
+        if (turn == "O") context.strokeStyle = "red";
+        else context.strokeStyle = "blue";
+        context.moveTo(2 * box, 2 * box);
+        context.lineTo(5 * box, 5 * box);
+        context.stroke();
 
-      printMsg();
-      canvas.removeEventListener("click", updateField);
-      return true;
+        printMsg();
+        canvas.removeEventListener("click", updateField);
+        return true;
     }
-  }
 
-  if ((cells[0][0] == cells[1][1]) && (cells[0][0] == cells[2][2])) { // diagonal
-    msg = cells[0][0] + " wins. Congrats!";
+    if ((cells[0][2] == cells[1][1]) && (cells[0][2] == cells[2][0])) { // diagonal
+        msg = cells[0][2] + " wins. Congrats!";
 
-    context.beginPath(); 
-    context.lineWidth = 2.5;      
-    if (turn == "O") context.strokeStyle = "red";
-    else context.strokeStyle = "blue";
-    context.moveTo(2 * box, 2 * box);
-    context.lineTo(5 * box, 5 * box);
-    context.stroke();
+        context.beginPath(); 
+        context.lineWidth = 2.5;      
+        if (turn == "O") context.strokeStyle = "red";
+        else context.strokeStyle = "blue";
+        context.moveTo(5 * box, 2 * box);
+        context.lineTo(2 * box, 5 * box);
+        context.stroke();
 
-    printMsg();
-    canvas.removeEventListener("click", updateField);
-    return true;
-  }
+        printMsg();
+        canvas.removeEventListener("click", updateField);
+        return true;
+    }
 
-  if ((cells[0][2] == cells[1][1]) && (cells[0][2] == cells[2][0])) { // diagonal
-    msg = cells[0][2] + " wins. Congrats!";
-
-    context.beginPath(); 
-    context.lineWidth = 2.5;      
-    if (turn == "O") context.strokeStyle = "red";
-    else context.strokeStyle = "blue";
-    context.moveTo(5 * box, 2 * box);
-    context.lineTo(2 * box, 5 * box);
-    context.stroke();
-
-    printMsg();
-    canvas.removeEventListener("click", updateField);
-    return true;
-  }
-
-  return false;
+    return false;
 }
 
 function startGame() {
-  if (Math.floor(Math.random() * 2) == 1) turn = "X"; // who will be the first? 
-  else turn = "O";
-  msg = turn + " makes the 1st turn";
+    if (Math.floor(Math.random() * 2) == 1) turn = "X"; // who will be the first? 
+    else turn = "O";
+    msg = turn + " makes the 1st turn";
 
-  context.drawImage(fieldImg, 0, 0);
-  context.font = "30px Times New Roman";
-  printMsg();
-  canvas.addEventListener("click", updateField);
+    context.drawImage(fieldImg, 0, 0);
+    context.font = "30px Times New Roman";
+    printMsg();
+    canvas.addEventListener("click", updateField);
 }
 
 function printMsg() {
-  context.fillStyle = "green";
-  context.fillRect(box + 16, box / 3 - 16, 400, 60);
-  if (turn == "O") context.fillStyle = "red";
-  else context.fillStyle = "blue";
-  context.fillText(msg, box * 2, 10 + box / 2);
+    context.drawImage(labelImg, 112, 16);
+    if (turn == "O") context.fillStyle = "red";
+    else context.fillStyle = "blue";
+    context.fillText(msg, box * 2, 10 + box / 2);
 }
 
