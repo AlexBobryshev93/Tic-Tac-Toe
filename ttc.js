@@ -42,8 +42,7 @@ function makeTurn(x, y) {
     else if (turn == "O") context.drawImage(oImg, (2 + y) * box + 4, (2 + x) * box + 4);
     cells[x][y] = turn;
     
-    if (checkWin() == true) return;
-    nextTurn();
+    if (!checkWin()) nextTurn();
   }
 }
 
