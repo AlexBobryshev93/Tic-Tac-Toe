@@ -151,12 +151,12 @@ function checkWin() {
 }
 
 function startGame() {
+    context.drawImage(fieldImg, 0, 0);
+    context.font = "30px Times New Roman";
     if (Math.floor(Math.random() * 2) == 1) turn = "X"; // who will be the first? 
     else turn = "O"; 
     msg = turn + " makes the 1st turn";
-
-    context.drawImage(fieldImg, 0, 0);
-    context.font = "30px Times New Roman";
+    computerOpponent = confirm("Do you want to play against the computer?");
     printMsg();
     if (!computerOpponent || turn == "X") canvas.addEventListener("click", updateField);
 }
