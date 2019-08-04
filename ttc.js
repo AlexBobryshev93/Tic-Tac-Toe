@@ -49,7 +49,10 @@ function makeTurn(x, y) {
 function nextTurn() {
   if (turnNumber >= 9) { // draw
     msg = "It's a draw...";
-    printMsg();
+    context.fillStyle = "green";
+    context.fillRect(box + 16, box / 3 - 16, 400, 60);
+    context.fillStyle = "black";
+    context.fillText(msg, box * 2.5, 10 + box / 2);
     canvas.removeEventListener("click", updateField);
     return;
   }
@@ -65,6 +68,15 @@ function checkWin() {
   for (let i = 0; i < 3; i++) {
     if ((cells[i][0] == cells[i][1]) && (cells[i][0] == cells[i][2])) { // check every horizontal line
       msg = cells[i][0] + " wins. Congrats!";
+      
+      context.beginPath(); 
+      context.lineWidth = 2.5;      
+      if (turn == "O") context.strokeStyle = "red";
+      else context.strokeStyle = "blue";
+      context.moveTo(2 * box, (i + 2.5) * box);
+      context.lineTo(5 * box, (i + 2.5) * box);
+      context.stroke();
+      
       printMsg();
       canvas.removeEventListener("click", updateField);
       return true;
@@ -72,6 +84,15 @@ function checkWin() {
 
     if ((cells[0][i] == cells[1][i]) && (cells[0][i] == cells[2][i])) { // check every vertical line
       msg = cells[0][i] + " wins. Congrats!";
+
+      context.beginPath(); 
+      context.lineWidth = 2.5;      
+      if (turn == "O") context.strokeStyle = "red";
+      else context.strokeStyle = "blue";
+      context.moveTo((i + 2.5) * box, 2 * box);
+      context.lineTo((i + 2.5) * box, 5 * box);
+      context.stroke();
+
       printMsg();
       canvas.removeEventListener("click", updateField);
       return true;
@@ -80,6 +101,15 @@ function checkWin() {
 
   if ((cells[0][0] == cells[1][1]) && (cells[0][0] == cells[2][2])) { // diagonal
     msg = cells[0][0] + " wins. Congrats!";
+
+    context.beginPath(); 
+    context.lineWidth = 2.5;      
+    if (turn == "O") context.strokeStyle = "red";
+    else context.strokeStyle = "blue";
+    context.moveTo(2 * box, 2 * box);
+    context.lineTo(5 * box, 5 * box);
+    context.stroke();
+
     printMsg();
     canvas.removeEventListener("click", updateField);
     return true;
@@ -87,6 +117,15 @@ function checkWin() {
 
   if ((cells[0][2] == cells[1][1]) && (cells[0][2] == cells[2][0])) { // diagonal
     msg = cells[0][2] + " wins. Congrats!";
+
+    context.beginPath(); 
+    context.lineWidth = 2.5;      
+    if (turn == "O") context.strokeStyle = "red";
+    else context.strokeStyle = "blue";
+    context.moveTo(5 * box, 2 * box);
+    context.lineTo(2 * box, 5 * box);
+    context.stroke();
+
     printMsg();
     canvas.removeEventListener("click", updateField);
     return true;
@@ -109,7 +148,8 @@ function startGame() {
 function printMsg() {
   context.fillStyle = "green";
   context.fillRect(box + 16, box / 3 - 16, 400, 60);
-  context.fillStyle = "red";
+  if (turn == "O") context.fillStyle = "red";
+  else context.fillStyle = "blue";
   context.fillText(msg, box * 2, 10 + box / 2);
 }
 
