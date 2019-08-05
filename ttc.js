@@ -5,7 +5,7 @@ const labelImg = new Image();
 const xImg = new Image();
 const oImg = new Image();
 const box = 96; // square size (pxl)
-let turn = "X";
+let turn = "X"; // "X" or "O"
 let turnNumber = 1;
 let msg;
 let computerOpponent = true;
@@ -13,7 +13,7 @@ let computerOpponent = true;
 //let computerOpponentTurn = setInterval(normalComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
 let computerOpponentTurn = setInterval(hardComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
 
-let cells = [ // we could leave it just undefined, but the strings were used for the debugging purposes
+let cells = [ // we could leave it just undefined, but the strings were used for the debugging purposes; in process there will be "X" or "O"
     ["[0][0]", "[0][1]", "[0][2]"],
     ["[1][0]","[1][1]", "[1][2]"],
     ["[2][0]", "[2][1]", "[2][2]"]
@@ -378,6 +378,28 @@ function hardComputerOpponentTurn() {
                 }
             }
 
+            if (turnNumber == 4 && cells[1][1] == "X") { // defence against the diagonal combination
+                if (cells[0][0] == "X" || cells[0][0] == "O") { // main diagonal is fully occupied
+                    if (Math.floor(Math.random() * 2) == 1) { // two possible turn variants for the sake of tactics diversity
+                        makeTurn(0, 2);
+                        return;
+                    } else { 
+                        makeTurn(2, 0);
+                        return;
+                    }
+                }
+
+                if (cells[2][0] == "X" || cells[2][0] == "O") { // second diagonal is fully occupied
+                    if (Math.floor(Math.random() * 2) == 1) { // two possible turn variants for the sake of tactics diversity
+                        makeTurn(0, 0);
+                        return;
+                    } else { 
+                        makeTurn(2, 2);
+                        return;
+                    }
+                }
+            }
+
             let possibleX;
             let possibleY;
             do {
@@ -393,5 +415,10 @@ function hardComputerOpponentTurn() {
             makeTurn(possibleX, possibleY);
         }
     }
+}
+
+function startMenu() {
+    // very soon
+    startGame();
 }
 
