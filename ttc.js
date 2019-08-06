@@ -1,6 +1,7 @@
 const canvas = document.getElementById("game");
 const context = canvas.getContext("2d");
 const fieldImg = new Image();
+const menuImg = new Image();
 const labelImg = new Image();
 const xImg = new Image();
 const oImg = new Image();
@@ -9,9 +10,8 @@ let turn = "X"; // "X" or "O"
 let turnNumber = 1;
 let msg;
 let computerOpponent = true;
-//let computerOpponentTurn = setInterval(easyComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
-//let computerOpponentTurn = setInterval(normalComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
-let computerOpponentTurn = setInterval(hardComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
+let difficulty; 
+let computerOpponentTurn; // will be set according to the difficulty level
 
 let cells = [ // we could leave it just undefined, but the strings were used for the debugging purposes; in process there will be "X" or "O"
     ["[0][0]", "[0][1]", "[0][2]"],
@@ -20,9 +20,12 @@ let cells = [ // we could leave it just undefined, but the strings were used for
 ];
 
 fieldImg.src = "images/field.png";
+menuImg.src = "images/menu.png";
 labelImg.src = "images/label.png";
 xImg.src = "images/X.png";
 oImg.src = "images/O.png";
+
+document.addEventListener("keydown", menuChoice);
 
 function updateField(event) {
     let click = {
@@ -153,12 +156,48 @@ function checkWin() {
 function startGame() {
     context.drawImage(fieldImg, 0, 0);
     context.font = "30px Times New Roman";
+    context.fillStyle = "red";
+    if (computerOpponent) context.fillText("Difficulty: " + difficulty, box * 2 + 32, box * 6 - 5);
     if (Math.floor(Math.random() * 2) == 1) turn = "X"; // who will be the first? 
     else turn = "O"; 
     msg = turn + " makes the 1st turn";
-    computerOpponent = confirm("Do you want to play against the computer?");
     printMsg();
     if (!computerOpponent || turn == "X") canvas.addEventListener("click", updateField);
+}
+
+function startMenu() {
+    context.drawImage(menuImg, 0, 0);
+}
+
+function menuChoice(event) {
+    switch (event.keyCode) {
+        case 49:
+            computerOpponent = false;
+            document.removeEventListener("keydown", menuChoice);
+            startGame();
+            break;
+        case 50:
+            computerOpponent = true;
+            document.removeEventListener("keydown", menuChoice);
+            difficulty = "EASY";
+            computerOpponentTurn = setInterval(easyComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
+            startGame();
+            break;
+        case 51:
+            computerOpponent = true;
+            document.removeEventListener("keydown", menuChoice);
+            difficulty = "NORMAL";
+            computerOpponentTurn = setInterval(normalComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
+            startGame();
+            break;
+        case 52:
+            computerOpponent = true;
+            document.removeEventListener("keydown", menuChoice);
+            difficulty = "HARD";
+            computerOpponentTurn = setInterval(hardComputerOpponentTurn, 3000); // 3000 msec give the imitation of human thinking
+            startGame();
+            break;    
+    }
 }
 
 function printMsg() {
@@ -410,6 +449,8 @@ function hardComputerOpponentTurn() {
             } while (cells[possibleX][possibleY] == "X" 
                 || cells[possibleX][possibleY] == "O" 
                 || (turnNumber == 2 && (possibleX + possibleY) % 2 != 0) // the second turn only through the center or diagonals
+                || (turnNumber == 3 && (possibleX + possibleY) % 2 != 0) // diagonal attack tactics
+                || (turnNumber == 5 && (possibleX + possibleY) % 2 != 0) // diagonal attack tactics
             );
             
             makeTurn(possibleX, possibleY);
@@ -417,8 +458,4 @@ function hardComputerOpponentTurn() {
     }
 }
 
-function startMenu() {
-    // very soon
-    startGame();
-}
 
