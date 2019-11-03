@@ -6,24 +6,26 @@ const labelImg = new Image();
 const xImg = new Image();
 const oImg = new Image();
 const box = 96; // square size (pxl)
-let turn = "X"; // "X" or "O"
-let turnNumber = 1;
-let msg;
-let computerOpponent = true;
-let difficulty; 
-let computerOpponentTurn; // will be set according to the difficulty level
-
-let cells = [ // we could leave it just undefined, but the strings were used for the debugging purposes; in process there will be "X" or "O"
-    ["[0][0]", "[0][1]", "[0][2]"],
-    ["[1][0]","[1][1]", "[1][2]"],
-    ["[2][0]", "[2][1]", "[2][2]"]
-];
 
 fieldImg.src = "images/field.png";
 menuImg.src = "images/menu.png";
 labelImg.src = "images/label.png";
 xImg.src = "images/X.png";
 oImg.src = "images/O.png";
+
+let turn = "X"; // "X" or "O"
+let turnNumber = 1;
+let msg;
+let computerOpponent = true;
+let difficulty; 
+let computerOpponentTurn; // will be set according to the difficulty level
+let startEvent; // needed for restart
+
+let cells = [ // we could leave it just undefined, but the strings were used for the debugging purposes; in process there will be "X" or "O"
+    ["[0][0]", "[0][1]", "[0][2]"],
+    ["[1][0]","[1][1]", "[1][2]"],
+    ["[2][0]", "[2][1]", "[2][2]"]
+];
 
 document.addEventListener("keydown", menuChoice);
 
@@ -163,6 +165,7 @@ function startGame() {
     msg = turn + " makes the 1st turn";
     printMsg();
     if (!computerOpponent || turn == "X") canvas.addEventListener("click", updateField);
+	document.getElementById("restart").style.display="block";
 }
 
 function startMenu() {
@@ -170,7 +173,9 @@ function startMenu() {
 }
 
 function menuChoice(event) {
-    switch (event.keyCode) {
+    startEvent = event;
+	
+	switch (event.keyCode) {
         case 49:
             computerOpponent = false;
             document.removeEventListener("keydown", menuChoice);
@@ -207,13 +212,24 @@ function printMsg() {
     context.fillText(msg, box * 2, 10 + box / 2);
 }
 
+function restart() { //resets the game data
+	turn = "X";
+	turnNumber = 1;
+	cells = [
+		["[0][0]", "[0][1]", "[0][2]"],
+		["[1][0]","[1][1]", "[1][2]"],
+		["[2][0]", "[2][1]", "[2][2]"]
+	];
+	
+	menuChoice(startEvent);
+}
+
 /*
 function dHtmlLoadScript(url)
 {
-   let e = document.createElement("script");
-   e.src = url;
-   e.type = "text/javascript";
-   document.getElementsByTagName("body")[0].appendChild(e); 
+   let elem = document.createElement("script");
+   elem.src = url;
+   document.getElementsByTagName("body")[0].appendChild(elem); 
 }
 */
 
