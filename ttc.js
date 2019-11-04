@@ -29,7 +29,7 @@ let cells = [ // we could leave it just undefined, but the strings were used for
 
 document.addEventListener("keydown", menuChoice);
 
-function updateField(event) {
+function updateField(event) { // calculates which square was chosen
     let click = {
         x: event.offsetX,
         y: event.offsetY
